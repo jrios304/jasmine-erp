@@ -1,0 +1,187 @@
+body, html{
+  	height:100%;
+  	width:100%;
+    background-image: url("images/fondo1.png");
+   	background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed; 
+}
+ 
+.iconDashboard{
+    /*height: 125px !important;*/
+    width: 20% !important;
+	padding-right:50px;
+	padding-top: 30px;
+}
+
+.logo_header {
+	padding-top: 10px;
+	margin-left: 20px;
+}
+
+
+.contentDashboard{
+	padding-left: 80px;
+	padding-right: 80px;
+}
+
+.iconEpa{
+	height: 70px;
+}
+
+.tableDashboard{
+	width:99%;
+	display: table;
+}
+
+.rowDashboard{
+	width:100%;
+	display: table-row;
+}
+
+
+.iconOptions{
+	height: 15px;
+}
+
+.titleUserSesion{
+	color:#75bc4b;
+}
+
+.headerLeft{
+	display: table-cell;
+	width: 50%;
+}
+
+.headerRight{
+	display: table-cell;	
+	width: 45%;
+	padding-top: 30px;
+	padding-right: 20px;
+	position: absolute;
+	text-align: right;
+}
+
+.cellModal{
+	width: 300px !important;
+	color: #5b824d;
+	font-weight: bold;
+}
+
+.cellModalConfiguracion{
+	width: 200px !important;
+	color: #5b824d;
+	font-weight: bold;
+}
+
+.cellModalBlue{
+	width: 300px !important;
+	color:#1460ad;
+	font-weight: bold;
+}
+
+.cellModalGray {
+	width: 300px !important;
+	color:#717171;
+	font-weight: bold;
+}
+
+.minicon{
+	height: 40px;
+}
+
+
+.panelSubmenu{
+	padding: 0px;
+	border-radius: 15px;
+	background-color: rgba(255,255,255, 0.7);
+}
+
+
+.headerSubMenu{
+	background-color: #199a52;
+	width: 100%;
+	border-radius: 15px 15px 0px 0px;
+	color:#fff;
+	text-align: left;
+}
+
+.content{
+	padding-top: 20px;
+}
+
+.textTitleSubmenu{
+	width: 100%;
+	font-size: 22px;
+}
+.contentSubmenu{
+	padding: 10px;
+}
+
+.contentSubmenu table{
+	background-color: #fff;
+	border-color: red;
+}
+
+a:link{
+	text-decoration: none;
+}
+
+.iconSubmenu{
+	height: 50px;
+}
+
+.iconBack{
+	height: 40px;
+	padding-left: 230px;	
+}
+
+
+
+/*Estilos Footer*/
+.footer {
+  position: fixed;
+  height: 4%;
+  width: 90%;
+  margin: 0;
+  bottom: 0;
+}
+
+.footer_text {
+  width: 99%;
+  margin-left: 40px;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 0.8em;
+  color: #fff;
+}
+
+.badge-notificacion{
+    position: relative;
+}
+
+.badge-notificacion::after{
+	content: attr(data-count-notificacion);
+    position: absolute;
+    top: -13px;
+    right: -4px;
+    background-color: red;
+    padding: 0px;
+    font-size: 10px;
+    font-weight: bold;
+    align-items: center;
+    color: white;
+    box-sizing: border-box;
+    border-radius: 500px;
+    width: 13px !important;
+    display: flex;
+    flex-direction: column;
+	justify-content: center;
+	align-items: center;
+   
+}
+
+/* Botonces Acciones Tablas*/
+.img_action_campana{
+	width: 25px;
+}

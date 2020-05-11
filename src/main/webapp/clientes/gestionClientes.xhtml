@@ -16,9 +16,9 @@
 	<ui:composition template="../template/layout.xhtml">
 		<ui:define name="page-content">
 			<p:growl id="msgs" globalOnly="true" showDetail="true" />
-			<p:blockUI block="clientePanel" trigger="">
-					CARGANDO<br />
-				<p:graphicImage value="#{resource['images/ajaxloadingbar.gif']}" />
+			<p:blockUI block="clientePanel" trigger="formRegistros:btnNuevo formFiltros:btnConsultar
+				formNuevo:btnGuardar formNuevo:btnCancelar">
+				<p:graphicImage value="#{resource['images/loading.gif']}" />
 			</p:blockUI>
 			<p:panel id="clientePanel" styleClass="panel-content">
 				<f:facet name="header">
@@ -56,7 +56,7 @@
 							</div>
 							<div class="ui-g-12 ui-md-4 ui-lg-2" style="margin-top: 14px">
 								<div class="ui-lg-8 ui-md-7 ui-g-5">
-									<p:commandButton styleClass="botones_azules" value="Consultar" />
+									<p:commandButton id="btnConsultar" styleClass="botones_azules" value="Consultar" />
 								</div>
 								<div class="ui-lg-4 ui-md-2 ui-g-1">
 									<p:commandLink>
@@ -65,10 +65,10 @@
 									</p:commandLink>
 								</div>
 							</div>
-							</h:form>
-							<h:form id="formRegistros">
-							<p:dataTable id="tableClientes" rows="10"
-								paginator="true" paginatorPosition="bottom"
+						</h:form>
+						<h:form id="formRegistros">
+							<p:dataTable id="tableClientes" rows="10" paginator="true"
+								paginatorPosition="bottom"
 								currentPageReportTemplate="{currentPage} de {totalPages} - Total Registros {totalRecords}"
 								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 								rowsPerPageTemplate="10,15,20" scrollable="true"
@@ -76,28 +76,94 @@
 								emptyMessage="No hay datos que coincidan con los criterios de búsqueda">
 								<p:columnGroup type="header" style="">
 									<p:row>
-										<p:column rowspan="2" headerText="Nombre" style="min-width:100px"/>
-										<p:column rowspan="2" headerText="Correo" style="min-width:100px"/>
-										<p:column rowspan="2" headerText="Teléfono/Celular" style="min-width:100px"/>
-										<p:column rowspan="2" headerText="Ciudad" style="min-width:100px"/>
-										<p:column rowspan="2" headerText="fecha de creación" style="min-width:100px"/>
-										<p:column headerText="Acciones" styleClass="border-header" style="min-width:100px"/>
+										<p:column rowspan="2" headerText="Nombre"
+											style="min-width:100px" />
+										<p:column rowspan="2" headerText="Correo"
+											style="min-width:100px" />
+										<p:column rowspan="2" headerText="Teléfono/Celular"
+											style="min-width:100px" />
+										<p:column rowspan="2" headerText="Ciudad"
+											style="min-width:100px" />
+										<p:column rowspan="2" headerText="fecha de creación"
+											style="min-width:100px" />
+										<p:column headerText="Acciones" styleClass="border-header"
+											style="min-width:100px" />
 									</p:row>
 								</p:columnGroup>
 							</p:dataTable>
-								<div class="ui-g-12" style="text-align: right;">
-									<p:commandButton value="Nuevo" styleClass="botones_amarillos" style="width: 107px"/>
-								</div>
-								<div class="ui-g-12" style="text-align: right;">
-									<p:commandLink actionListener="#{gestionClientesBean.redirectUrl('../menu/menuPrincipal.xhtml')}">
-										<p:graphicImage url="#{resource['images/regresar.png']}"
-											style="width:30px;height:30px" />
-									</p:commandLink>
-								</div>
-							</h:form>
+							<div class="ui-g-12" style="text-align: right;">
+								<p:commandButton id="btnNuevo" value="Nuevo" styleClass="botones_amarillos"
+									style="width: 107px" resetValues="true" update="formNuevo:panel"
+									actionListener="#{gestionClientesBean.abrirPopUpNuevo}"/>
+							</div>
+							<div class="ui-g-12" style="text-align: right;">
+								<p:commandLink
+									actionListener="#{gestionClientesBean.redirectUrl('../menu/menuPrincipal.xhtml')}">
+									<p:graphicImage url="#{resource['images/regresar.png']}"
+										style="width:30px;height:30px" />
+								</p:commandLink>
+							</div>
+						</h:form>
 					</p:outputPanel>
 				</div>
 			</p:panel>
+			<p:dialog id="dialogNuevo" widgetVar="popUpNuevo" width="50%"
+				modal="true" responsive="true" resizable="false" closable="false">
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="Nuevo Cliente" />
+					</h:panelGroup>
+				</f:facet>
+				<h:form id="formNuevo">
+					<p:panel id="panel">
+						<div class="ui-lg-12 ui-md-12 ui-g-12">
+							<p:outputLabel id="lblNombre" for="inputNombre"
+								value="Nombre completo:" styleClass="ui-g-12" />
+							<p:inputText id="inputNombre" styleClass="ui-g-12" maxlength="30"
+								value="#{gestionClientesBean.clienteDTO.nombre}"
+								required="true" requiredMessage="Este campo es requerido" />
+							<p:keyFilter regEx="/[a-z ]/i" for="inputNombre"/>
+							<p:message id="msgNombre" for="inputNombre" styleClass="ui-g-12" />
+						</div>
+						<div class="ui-lg-12 ui-md-12 ui-g-12">
+							<p:outputLabel id="lblCorreo" for="inputCorreo"
+								value="Correo electrónico:" styleClass="ui-g-12" />
+							<p:inputText id="inputCorreo" styleClass="ui-g-12" maxlength="30"
+								value="#{gestionClientesBean.clienteDTO.email}"
+								validatorMessage="Correo eléctronico no válido"
+								placeholder="example@mail.com"
+								required="true" requiredMessage="Este campo es requerido">
+							<f:validateRegex pattern="^([_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,}))*$"/>
+							</p:inputText>
+							<p:message for="inputCorreo" styleClass="ui-g-12" />
+						</div>
+						<div class="ui-lg-12 ui-md-12 ui-g-12">
+							<p:outputLabel id="lblTelefono" for="inputTelefono"
+								value="Teléfono/Celular:" styleClass="ui-g-12" />
+							<p:inputText id="inputTelefono" styleClass="ui-g-12" maxlength="10"
+								value="#{gestionClientesBean.clienteDTO.telefono}"
+								required="true" requiredMessage="Este campo es requerido" />
+							<p:keyFilter regEx="/[0-9]/i" for="inputTelefono"/>
+							<p:message for="inputTelefono" styleClass="ui-g-12" />
+						</div>
+						<div class="ui-lg-12 ui-md-12 ui-g-12">
+							<p:outputLabel id="lblCiudad" for="inputCiudad" value="Ciudad:"
+								styleClass="ui-g-12" />
+							<p:selectOneMenu id="inputCiudad" value="#{gestionClientesBean.idCiudad}"
+								required="true" requiredMessage="Este campo es requerido" styleClass="ui-g-12 ui-g-nopad">
+								<f:selectItem itemLabel="Seleccione" itemValue=""/>
+								<f:selectItems value="#{gestionClientesBean.listaCiudades}" var="ciudad" itemValue="#{ciudad.id}" itemLabel="#{ciudad.nombre}"/>
+							</p:selectOneMenu>
+							<p:message for="inputCiudad" styleClass="ui-g-12" />
+						</div>
+					</p:panel>
+					<div class="ui-g-12" style="text-align: center">
+						<p:commandButton id="btnGuardar" styleClass="botones_azules" actionListener="#{gestionClientesBean.nuevo()}" value="Guardar" style="width:103px" update="formNuevo msgs"/>
+						<p:commandButton id="btnCancelar" styleClass="botones_rojos" value="Cancelar" 
+							onclick="PF('popUpNuevo').hide()" style="width:103px"/>
+					</div>
+				</h:form>
+			</p:dialog>
 		</ui:define>
 	</ui:composition>
 </h:body>

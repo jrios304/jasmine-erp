@@ -47,6 +47,10 @@
 		<param-name>primefaces.FONT_AWESOME</param-name>
 		<param-value>true</param-value>
 	</context-param>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>com.jasmine.erp.web.conf.JamineErpWebConfig</param-value>
+	</context-param>
 	
 <!-- 	<filter> -->
 <!-- 		<filter-name>springSecurityFilterChain</filter-name> -->

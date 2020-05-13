@@ -408,7 +408,7 @@ form>.ui-widget-content {
 .ui-selectonemenu>label {
 	border-radius: 3px !important;
 	box-shadow: 0 0 0 0 !important;
-	height: 19px !important;
+	height: 23px !important;
 	width: 99% !important;
 }
 
@@ -715,7 +715,7 @@ tr td .img_action_regresar {
 
 .filter_calendar>button{
 	width: 30px !important;
-	height: 30px !important;
+	height: 33px !important;
 	position: absolute;
 	right: 0px;
 	top: 0px;
@@ -1205,7 +1205,11 @@ tab, #pgContratoVigente, #pgHistorico {
 }
 
 .fontSize11px {
-	font-size: 11px !important;
+	font-size: 14px !important;
+}
+
+.ui-widget .ui-widget {
+    font-size: 14px;
 }
 
 .maskUpperCase {

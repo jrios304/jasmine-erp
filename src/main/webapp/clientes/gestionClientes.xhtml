@@ -17,7 +17,8 @@
 		<ui:define name="page-content">
 			<p:growl id="msgs" globalOnly="true" showDetail="true" />
 			<p:blockUI block="clientePanel" trigger="formRegistros:btnNuevo formFiltros:btnConsultar
-				formNuevo:btnGuardar formNuevo:btnCancelar">
+				formNuevo:btnGuardar formNuevo:btnCancelar formPopupConfirmarInactivar:botonContinuar
+				formPopupConfirmarInactivar:botonCancelar">
 				<p:graphicImage value="#{resource['images/loading.gif']}" />
 			</p:blockUI>
 			<p:panel id="clientePanel" styleClass="panel-content">
@@ -32,69 +33,114 @@
 						<h:form id="formFiltros">
 							<div class="ui-g-12 ui-md-4 ui-lg-2">
 								<p:outputLabel value="Nombre:" styleClass="ui-g-12" />
-								<p:autoComplete styleClass="ui-g-12 ui-g-nopad" />
+								<p:autoComplete id="autocNombre" styleClass="ui-g-12 ui-g-nopad" 
+								value="#{gestionClientesBean.clienteBusqueda.nombre}" maxResults="5"
+								completeMethod="#{gestionClientesBean.autocompleteNombre}"/>
+								<p:keyFilter regEx="/[a-z ]/i" for="autocNombre"/>
 							</div>
 							<div class="ui-g-12 ui-md-4 ui-lg-2">
-								<p:outputLabel value="Correo:" styleClass="ui-g-12" />
-								<p:autoComplete styleClass="ui-g-12 ui-g-nopad" />
+								<p:outputLabel value="Correo:" styleClass="ui-g-12"/>
+								<p:autoComplete styleClass="ui-g-12 ui-g-nopad"
+								value="#{gestionClientesBean.clienteBusqueda.correo}"
+								completeMethod="#{gestionClientesBean.autocompleteEmail}" maxResults="5"/>
 							</div>
 							<div class="ui-g-12 ui-md-4 ui-lg-2">
 								<p:outputLabel value="Teléfono/Celular:" styleClass="ui-g-12" />
-								<p:autoComplete styleClass="ui-g-12 ui-g-nopad" />
+								<p:autoComplete id="autocTelefono" styleClass="ui-g-12 ui-g-nopad"
+								value="#{gestionClientesBean.clienteBusqueda.celular}"
+								completeMethod="#{gestionClientesBean.autocompleteTelefono}" maxResults="5"/>
+								<p:keyFilter regEx="/[0-9]/i" for="autocTelefono"/>
 							</div>
 							<div class="ui-g-12 ui-md-4 ui-lg-2">
 								<p:outputLabel value="Ciudad:" styleClass="ui-g-12" />
-								<p:selectOneMenu styleClass="ui-g-12 ui-g-nopad">
+								<p:selectOneMenu styleClass="ui-g-12 ui-g-nopad" 
+									value="#{gestionClientesBean.clienteBusqueda.ciudad}">
 									<f:selectItem itemLabel="Todas" itemValue="" />
+									<f:selectItems value="#{gestionClientesBean.listaCiudadesFiltro}" var="ciudad"
+									itemLabel="#{ciudad.nombre}" itemValue="#{ciudad.id}"/>
 								</p:selectOneMenu>
 							</div>
 							<div class="ui-g-12 ui-md-4 ui-lg-2">
 								<p:outputLabel value="Fecha de creación" styleClass="ui-g-12" />
 								<p:calendar styleClass="filter_calendar ui-g-12 ui-g-nopad"
-									showOn="button">
+									showOn="button" value="#{gestionClientesBean.fechaCreacionFiltro}">
 								</p:calendar>
 							</div>
-							<div class="ui-g-12 ui-md-4 ui-lg-2" style="margin-top: 14px">
+							<div class="ui-g-12 ui-md-4 ui-lg-2" style="margin-top: 23px">
 								<div class="ui-lg-8 ui-md-7 ui-g-5">
-									<p:commandButton id="btnConsultar" styleClass="botones_azules" value="Consultar" />
+									<p:commandButton id="btnConsultar" styleClass="botones_azules" value="Consultar" 
+									actionListener="#{gestionClientesBean.obtenerClientesFiltro()}" update="formRegistros"/>
 								</div>
 								<div class="ui-lg-4 ui-md-2 ui-g-1">
-									<p:commandLink>
+									<p:commandLink actionListener="#{gestionClientesBean.limpiarFiltros()}"
+										update="formFiltros formRegistros" resetValues="true">
 										<p:graphicImage url="#{resource['images/limpiar.png']}"
 											style="width:30px;height:30px" />
 									</p:commandLink>
 								</div>
 							</div>
 						</h:form>
-						<h:form id="formRegistros">
+						<h:form id="formRegistros" style="width:100%">
+						<div class="ui-lg-12 ui-md-12 ui-g-12">
 							<p:dataTable id="tableClientes" rows="10" paginator="true"
-								paginatorPosition="bottom"
+								paginatorPosition="bottom" value="#{gestionClientesBean.listaClientes}" var="cliente"
 								currentPageReportTemplate="{currentPage} de {totalPages} - Total Registros {totalRecords}"
 								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 								rowsPerPageTemplate="10,15,20" scrollable="true"
-								scrollHeight="262" lazy="true" scrollWidth="100%"
+								 scrollWidth="99%" scrollHeight="300"
 								emptyMessage="No hay datos que coincidan con los criterios de búsqueda">
 								<p:columnGroup type="header" style="">
 									<p:row>
 										<p:column rowspan="2" headerText="Nombre"
-											style="min-width:100px" />
+											style="min-width:200px" width="150"/>
 										<p:column rowspan="2" headerText="Correo"
-											style="min-width:100px" />
+											style="min-width:200px" width="150"/>
 										<p:column rowspan="2" headerText="Teléfono/Celular"
-											style="min-width:100px" />
+											style="min-width:200px" width="150"/>
 										<p:column rowspan="2" headerText="Ciudad"
-											style="min-width:100px" />
+											style="min-width:200px" width="150"/>
 										<p:column rowspan="2" headerText="fecha de creación"
-											style="min-width:100px" />
-										<p:column headerText="Acciones" styleClass="border-header"
-											style="min-width:100px" />
+											style="min-width:200px" width="150"/>
+										<p:column rowspan="2" headerText="Acciones" styleClass="border-header"
+											style="min-width:200px" width="150"/>
 									</p:row>
 								</p:columnGroup>
+								<p:column>
+									<p:outputLabel value="#{cliente.nombre}"/>
+								</p:column>
+								<p:column>
+									<p:outputLabel value="#{cliente.email}"/>
+								</p:column>
+								<p:column>
+									<p:outputLabel value="#{cliente.telefono}"/>
+								</p:column>
+								<p:column>
+									<p:outputLabel value="#{cliente.ciudad.nombre}"/>
+								</p:column>
+								<p:column>
+									<p:outputLabel value="#{cliente.fechaCreacion}">
+									</p:outputLabel>
+								</p:column>
+								<p:column>
+									<p:commandLink id="editar" style="margin-right:10px" 
+										actionListener="#{gestionClientesBean.editar(cliente.id)}" 
+										update="formNuevo formHeader" resetValues="true">
+										<p:graphicImage url="#{resource['images/editar.png']}"
+											style="width:20px;" title="Editar" />
+									</p:commandLink>
+									<p:commandLink id="eliminar" 
+										actionListener="#{gestionClientesBean.abrirPopUpConfirmacion(cliente)}"
+										update="formPopupConfirmarInactivar">
+										<p:graphicImage url="#{resource['images/eliminar.png']}"
+											style="width:20px;" title="Eliminar" />
+									</p:commandLink>
+								</p:column>
 							</p:dataTable>
+							</div>
 							<div class="ui-g-12" style="text-align: right;">
 								<p:commandButton id="btnNuevo" value="Nuevo" styleClass="botones_amarillos"
-									style="width: 107px" resetValues="true" update="formNuevo:panel"
-									actionListener="#{gestionClientesBean.abrirPopUpNuevo}"/>
+									style="width: 107px" resetValues="true" update="formNuevo:panel formHeader"
+									actionListener="#{gestionClientesBean.abrirPopUpNuevo(false)}"/>
 							</div>
 							<div class="ui-g-12" style="text-align: right;">
 								<p:commandLink
@@ -110,9 +156,11 @@
 			<p:dialog id="dialogNuevo" widgetVar="popUpNuevo" width="50%"
 				modal="true" responsive="true" resizable="false" closable="false">
 				<f:facet name="header">
+				<h:form id="formHeader">
 					<h:panelGroup>
-						<h:outputText value="Nuevo Cliente" />
+						<h:outputText value="#{gestionClientesBean.editando ? 'Editar cliente':'Nuevo cliente'}" />
 					</h:panelGroup>
+				</h:form>
 				</f:facet>
 				<h:form id="formNuevo">
 					<p:panel id="panel">
@@ -121,6 +169,7 @@
 								value="Nombre completo:" styleClass="ui-g-12" />
 							<p:inputText id="inputNombre" styleClass="ui-g-12" maxlength="30"
 								value="#{gestionClientesBean.clienteDTO.nombre}"
+								disabled="#{gestionClientesBean.editando}"
 								required="true" requiredMessage="Este campo es requerido" />
 							<p:keyFilter regEx="/[a-z ]/i" for="inputNombre"/>
 							<p:message id="msgNombre" for="inputNombre" styleClass="ui-g-12" />
@@ -153,16 +202,53 @@
 								required="true" requiredMessage="Este campo es requerido" styleClass="ui-g-12 ui-g-nopad">
 								<f:selectItem itemLabel="Seleccione" itemValue=""/>
 								<f:selectItems value="#{gestionClientesBean.listaCiudades}" var="ciudad" itemValue="#{ciudad.id}" itemLabel="#{ciudad.nombre}"/>
+								<p:ajax event="itemSelect" update="inputCiudad"/>
 							</p:selectOneMenu>
 							<p:message for="inputCiudad" styleClass="ui-g-12" />
 						</div>
 					</p:panel>
 					<div class="ui-g-12" style="text-align: center">
-						<p:commandButton id="btnGuardar" styleClass="botones_azules" actionListener="#{gestionClientesBean.nuevo()}" value="Guardar" style="width:103px" update="formNuevo msgs"/>
+						<p:commandButton id="btnGuardar" styleClass="botones_azules" actionListener="#{gestionClientesBean.nuevo()}" value="Guardar" style="width:103px" 
+							update="formNuevo msgs formRegistros formFiltros"/>
 						<p:commandButton id="btnCancelar" styleClass="botones_rojos" value="Cancelar" 
 							onclick="PF('popUpNuevo').hide()" style="width:103px"/>
 					</div>
 				</h:form>
+			</p:dialog>
+			<p:dialog id="dialogConfirmacion" widgetVar="popUpConfirmacion"
+				modal="true" resizable="false" responsive="true" width="60%">
+				<f:facet name="header">
+					<h:panelGrid columns="2">
+						<h:panelGroup>
+							<h:outputText value="Eliminar cliente" />
+						</h:panelGroup>
+					</h:panelGrid>
+				</f:facet>
+				<div class="ui-g ui-g-12 panel-inicial-paginador">
+					<h:form id="formPopupConfirmarInactivar">
+						<div class="ui-g-12" style="text-align: center">
+							<p:outputLabel style="font-size : 30pts">
+									¿Est&#225; seguro que desea eliminar el cliente seleccionado&#63;,
+									se eliminaran los registros asociados a este.
+								</p:outputLabel>
+						</div>
+						<!-- BOTONES SI/NO -->
+						<div class="ui-g-12" style="width: 100%; text-align:center">
+							<p:commandButton value="CONTINUAR" id="botonContinuar"
+								styleClass="botones_azules" icon="ui-icon-check" process="@this"
+								style="margin-right : 10px; margin-left: 10px; width:150px"
+								oncomplete="PF('popUpConfirmacion').hide();"
+								actionListener="#{gestionClientesBean.eliminarCliente()}"
+								update="msgs formRegistros formFiltros" resetValues="true">
+							</p:commandButton>
+							<p:commandButton value="CANCELAR" id="botonCancelar"
+								styleClass="botones_rojos" icon="ui-icon-closethick"
+								process="@this" style="width:150px"
+								onclick="PF('popUpConfirmacion').hide();">
+							</p:commandButton>
+						</div>
+					</h:form>
+				</div>
 			</p:dialog>
 		</ui:define>
 	</ui:composition>

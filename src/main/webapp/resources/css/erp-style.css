@@ -319,7 +319,7 @@ ul>.ui-tabs-selected>a {
 }
 
 .ui-inputtextarea {
-	border: none !important;
+	border: silver solid 1px !important;
 	box-shadow: none !important;
 }
 
@@ -865,13 +865,14 @@ tr td .img_action_regresar {
     text-align:center;
 }
 
-.text_img_empleado {
+.text_img_cliente {
 	font-size: 20px;
 	font-weight: bold;
-	color: #0080c3;
+	color: #000000;
 	word-wrap: break-word;
 	display: inline-block;
 	text-align:center;
+	width: 100%;
 }
 
 .text_img_verde {
@@ -882,7 +883,7 @@ tr td .img_action_regresar {
 	display: inline-block
 }
 
-.img_empleado {
+.img_cliente {
 	width: 100% !important;
 }
 

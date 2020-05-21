@@ -24,7 +24,7 @@
 			<p:panel id="clientePanel" styleClass="panel-content">
 				<f:facet name="header">
 					<div style="width: 100%; text-align: center;">
-						<p:graphicImage url="#{resource['images/cliente.png']}"
+						<p:graphicImage url="#{resource['images/cita.png']}"
 							styleClass="img-icon-title"></p:graphicImage>
 					</div>
 				</f:facet>
@@ -32,47 +32,52 @@
 					<p:outputPanel styleClass="ui-g-12">
 						<h:form id="formFiltros">
 							<div class="ui-g-12 ui-md-4 ui-lg-2">
-								<p:outputLabel value="Nombre:" styleClass="ui-g-12" />
-								<p:autoComplete id="autocNombre" styleClass="ui-g-12 ui-g-nopad" 
-								value="#{gestionClientesBean.clienteBusqueda.nombre}" maxResults="5"
-								completeMethod="#{gestionClientesBean.autocompleteNombre}"/>
-								<p:keyFilter regEx="/[a-z ]/i" for="autocNombre"/>
+								<p:outputLabel value="C&#243;digo cita:" styleClass="ui-g-12" />
+								<p:autoComplete id="autocCita" styleClass="ui-g-12 ui-g-nopad" 
+									maxResults="5" completeMethod="#{gestionCitasBean.autocompleteCodigosFiltro}"
+									value="#{gestionCitasBean.filtro.codigo}" forceSelection="true"
+									emptyMessage="No se encuentran registros"/>
+								<p:keyFilter regEx="/[0-9]/i" for="autocCita"/>
 							</div>
 							<div class="ui-g-12 ui-md-4 ui-lg-2">
-								<p:outputLabel value="Correo:" styleClass="ui-g-12"/>
-								<p:autoComplete styleClass="ui-g-12 ui-g-nopad"
-								value="#{gestionClientesBean.clienteBusqueda.correo}"
-								completeMethod="#{gestionClientesBean.autocompleteEmail}" maxResults="5"/>
-							</div>
-							<div class="ui-g-12 ui-md-4 ui-lg-2">
-								<p:outputLabel value="Teléfono/Celular:" styleClass="ui-g-12" />
-								<p:autoComplete id="autocTelefono" styleClass="ui-g-12 ui-g-nopad"
-								value="#{gestionClientesBean.clienteBusqueda.celular}"
-								completeMethod="#{gestionClientesBean.autocompleteTelefono}" maxResults="5"/>
-								<p:keyFilter regEx="/[0-9]/i" for="autocTelefono"/>
-							</div>
-							<div class="ui-g-12 ui-md-4 ui-lg-2">
-								<p:outputLabel value="Ciudad:" styleClass="ui-g-12" />
-								<p:selectOneMenu styleClass="ui-g-12 ui-g-nopad" 
-									value="#{gestionClientesBean.clienteBusqueda.ciudad}">
-									<f:selectItem itemLabel="Todas" itemValue="" />
-									<f:selectItems value="#{gestionClientesBean.listaCiudadesFiltro}" var="ciudad"
-									itemLabel="#{ciudad.nombre}" itemValue="#{ciudad.id}"/>
+								<p:outputLabel value="Tipo Servicio:" styleClass="ui-g-12" />
+								<p:selectOneMenu id="tipoServicio" styleClass="ui-g-12 ui-g-nopad" 
+									value="#{gestionCitasBean.filtro.tipoServicio}">
+									<f:selectItem itemLabel="Todos" itemValue="" />
+									<f:selectItems value="#{gestionCitasBean.listaTipoServicioFiltro}"
+										var="tipo" itemLabel="#{tipo.nombre}" itemValue="#{tipo.id}"/>
 								</p:selectOneMenu>
 							</div>
 							<div class="ui-g-12 ui-md-4 ui-lg-2">
-								<p:outputLabel value="Fecha de creación" styleClass="ui-g-12" />
-								<p:calendar styleClass="filter_calendar ui-g-12 ui-g-nopad"
-									showOn="button" value="#{gestionClientesBean.fechaCreacionFiltro}">
+								<p:outputLabel value="Fecha Servicio:" styleClass="ui-g-12" />
+								<p:calendar id="fechaCita" styleClass="filter_calendar ui-g-12 ui-g-nopad" 
+									showOn="button" value="#{gestionCitasBean.filtro.fecha}">
 								</p:calendar>
+							</div>
+							<div class="ui-g-12 ui-md-4 ui-lg-2">
+								<p:outputLabel value="Sede:" styleClass="ui-g-12" />
+								<p:selectOneMenu id="sedeCita" styleClass="ui-g-12 ui-g-nopad"
+									value="#{gestionCitasBean.filtro.sede}">
+									<f:selectItem itemLabel="Todas" itemValue="" />
+									<f:selectItems value="#{gestionCitasBean.listaSedes}"
+										var="sede" itemLabel="#{sede.nombre}" itemValue="#{sede.id}"/>
+								</p:selectOneMenu>
+							</div>
+							<div class="ui-g-12 ui-md-4 ui-lg-2">
+								<p:outputLabel value="Cliente:" styleClass="ui-g-12" />
+								<p:autoComplete id="autocCliente" styleClass="ui-g-12 ui-g-nopad"
+									maxResults="5" completeMethod="#{gestionCitasBean.autocompleteClientesFiltro}"
+									value="#{gestionCitasBean.filtro.cliente}" forceSelection="true"
+									emptyMessage="No se encuentran registros"/>
+								<p:keyFilter regEx="/[a-z ]/i" for="autocCliente"/>
 							</div>
 							<div class="ui-g-12 ui-md-4 ui-lg-2" style="margin-top: 23px">
 								<div class="ui-lg-8 ui-md-7 ui-g-5">
 									<p:commandButton id="btnConsultar" styleClass="botones_azules" value="Consultar" 
-									actionListener="#{gestionClientesBean.obtenerClientesFiltro()}" update="formRegistros"/>
+									update="formRegistros" actionListener="#{gestionCitasBean.buscarCitasFiltro()}"/>
 								</div>
 								<div class="ui-lg-4 ui-md-2 ui-g-1">
-									<p:commandLink actionListener="#{gestionClientesBean.limpiarFiltros()}"
+									<p:commandLink actionListener="#{gestionCitasBean.limpiarFiltros()}"
 										update="formFiltros formRegistros" resetValues="true">
 										<p:graphicImage url="#{resource['images/limpiar.png']}"
 											style="width:30px;height:30px" />
@@ -82,8 +87,8 @@
 						</h:form>
 						<h:form id="formRegistros" style="width:100%">
 						<div class="ui-lg-12 ui-md-12 ui-g-12">
-							<p:dataTable id="tableClientes" rows="10" paginator="true"
-								paginatorPosition="bottom" value="#{gestionClientesBean.listaClientes}" var="cliente"
+							<p:dataTable id="tableCitas" rows="10" paginator="true"
+								paginatorPosition="bottom" value="#{gestionCitasBean.listaCitas}" var="cita"
 								currentPageReportTemplate="{currentPage} de {totalPages} - Total Registros {totalRecords}"
 								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 								rowsPerPageTemplate="10,15,20" scrollable="true"
@@ -91,45 +96,49 @@
 								emptyMessage="No hay datos que coincidan con los criterios de búsqueda">
 								<p:columnGroup type="header" style="">
 									<p:row>
-										<p:column rowspan="2" headerText="Nombre"
+										<p:column rowspan="2" headerText="C&#243;digo Cita"
 											style="min-width:200px" width="150"/>
-										<p:column rowspan="2" headerText="Correo"
+										<p:column rowspan="2" headerText="Tipo Servicio"
 											style="min-width:200px" width="150"/>
-										<p:column rowspan="2" headerText="Teléfono/Celular"
+										<p:column rowspan="2" headerText="Descripci&#243;n"
 											style="min-width:200px" width="150"/>
-										<p:column rowspan="2" headerText="Ciudad"
+										<p:column rowspan="2" headerText="Fecha y hora"
 											style="min-width:200px" width="150"/>
-										<p:column rowspan="2" headerText="fecha de creación"
+										<p:column rowspan="2" headerText="Sede"
+											style="min-width:200px" width="150"/>
+										<p:column rowspan="2" headerText="Cliente"
 											style="min-width:200px" width="150"/>
 										<p:column rowspan="2" headerText="Acciones" styleClass="border-header"
 											style="min-width:200px" width="150"/>
 									</p:row>
 								</p:columnGroup>
 								<p:column>
-									<p:outputLabel value="#{cliente.nombre}"/>
+									<p:outputLabel value="#{cita.codigo}"/>
 								</p:column>
 								<p:column>
-									<p:outputLabel value="#{cliente.email}"/>
+									<p:outputLabel value="#{cita.tipoServicio.nombre}"/>
 								</p:column>
 								<p:column>
-									<p:outputLabel value="#{cliente.telefono}"/>
+									<p:outputLabel value="#{cita.descripcion}" title="#{cita.descripcion}"/>
 								</p:column>
 								<p:column>
-									<p:outputLabel value="#{cliente.ciudad.nombre}"/>
+									<p:outputLabel value="#{gestionCitasBean.darFormatoFechaHora(cita.fechaHora)}"/>
 								</p:column>
 								<p:column>
-									<p:outputLabel value="#{cliente.fechaCreacion}">
-									</p:outputLabel>
+									<p:outputLabel value="#{cita.sede.nombre}"/>
+								</p:column>
+								<p:column>
+									<p:outputLabel value="#{cita.cliente.nombre}"/>
 								</p:column>
 								<p:column>
 									<p:commandLink id="editar" style="margin-right:10px" 
-										actionListener="#{gestionClientesBean.editar(cliente.id)}" 
+										actionListener="#{gestionCitasBean.editar(cita.id)}" 
 										update="formNuevo formHeader" resetValues="true">
 										<p:graphicImage url="#{resource['images/editar.png']}"
 											style="width:20px;" title="Editar" />
 									</p:commandLink>
 									<p:commandLink id="eliminar" 
-										actionListener="#{gestionClientesBean.abrirPopUpConfirmacion(cliente)}"
+										actionListener="#{gestionCitasBean.abrirPopUpConfirmacion(cita)}"
 										update="formPopupConfirmarInactivar">
 										<p:graphicImage url="#{resource['images/eliminar.png']}"
 											style="width:20px;" title="Eliminar" />
@@ -138,22 +147,13 @@
 							</p:dataTable>
 							</div>
 							<div class="ui-g-12" style="text-align: right;">
-								<p:commandButton id="btnNuevo" value="Nuevo" styleClass="botones_amarillos"
+								<p:commandButton id="btnNuevo" value="Nueva" styleClass="botones_amarillos"
 									style="width: 107px" resetValues="true" update="formNuevo:panel formHeader"
-									actionListener="#{gestionClientesBean.abrirPopUpNuevo(false)}"/>
-							</div>
-							<div class="ui-g-2" style="text-align: center;">
-								<p:commandLink
-									actionListener="#{gestionClientesBean.redirectUrl('../clientes/gestionCitas.xhtml')}">
-									<p:graphicImage url="#{resource['images/cita.png']}"
-										style="width:70px;height:70px" />
-									<p:outputLabel styleClass="text_img_cliente"
-										value="Citas" />
-								</p:commandLink>
+									actionListener="#{gestionCitasBean.abrirPopUpNueva(false)}"/>
 							</div>
 							<div class="ui-g-12" style="text-align: right;">
 								<p:commandLink
-									actionListener="#{gestionClientesBean.redirectUrl('../menu/menuPrincipal.xhtml')}">
+									actionListener="#{gestionCitasBean.redirectUrl('../clientes/gestionClientes.xhtml')}">
 									<p:graphicImage url="#{resource['images/regresar.png']}"
 										style="width:30px;height:30px" />
 								</p:commandLink>
@@ -167,58 +167,67 @@
 				<f:facet name="header">
 				<h:form id="formHeader">
 					<h:panelGroup>
-						<h:outputText value="#{gestionClientesBean.editando ? 'Editar cliente':'Nuevo cliente'}" />
+						<h:outputText value="#{gestionCitasBean.editando ? 'Editar cita':'Nueva cita'}"/>
 					</h:panelGroup>
 				</h:form>
 				</f:facet>
 				<h:form id="formNuevo">
 					<p:panel id="panel">
 						<div class="ui-lg-12 ui-md-12 ui-g-12">
-							<p:outputLabel id="lblNombre" for="inputNombre"
-								value="Nombre completo:" styleClass="ui-g-12" />
-							<p:inputText id="inputNombre" styleClass="ui-g-12" maxlength="30"
-								value="#{gestionClientesBean.clienteDTO.nombre}"
-								disabled="#{gestionClientesBean.editando}"
-								required="true" requiredMessage="Este campo es requerido" />
-							<p:keyFilter regEx="/[a-z ]/i" for="inputNombre"/>
-							<p:message id="msgNombre" for="inputNombre" styleClass="ui-g-12" />
-						</div>
-						<div class="ui-lg-12 ui-md-12 ui-g-12">
-							<p:outputLabel id="lblCorreo" for="inputCorreo"
-								value="Correo electrónico:" styleClass="ui-g-12" />
-							<p:inputText id="inputCorreo" styleClass="ui-g-12" maxlength="30"
-								value="#{gestionClientesBean.clienteDTO.email}"
-								validatorMessage="Correo eléctronico no válido"
-								placeholder="example@mail.com"
-								required="true" requiredMessage="Este campo es requerido">
-							<f:validateRegex pattern="^([_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,}))*$"/>
-							</p:inputText>
-							<p:message for="inputCorreo" styleClass="ui-g-12" />
-						</div>
-						<div class="ui-lg-12 ui-md-12 ui-g-12">
-							<p:outputLabel id="lblTelefono" for="inputTelefono"
-								value="Teléfono/Celular:" styleClass="ui-g-12" />
-							<p:inputText id="inputTelefono" styleClass="ui-g-12" maxlength="10"
-								value="#{gestionClientesBean.clienteDTO.telefono}"
-								required="true" requiredMessage="Este campo es requerido" />
-							<p:keyFilter regEx="/[0-9]/i" for="inputTelefono"/>
-							<p:message for="inputTelefono" styleClass="ui-g-12" />
-						</div>
-						<div class="ui-lg-12 ui-md-12 ui-g-12">
-							<p:outputLabel id="lblCiudad" for="inputCiudad" value="Ciudad:"
+							<p:outputLabel id="lblTipoServicio" for="inputTipoServicio" value="Tipo Servicio:"
 								styleClass="ui-g-12" />
-							<p:selectOneMenu id="inputCiudad" value="#{gestionClientesBean.idCiudad}"
+							<p:selectOneMenu id="inputTipoServicio" value="#{gestionCitasBean.idTipoServicio}"
 								required="true" requiredMessage="Este campo es requerido" styleClass="ui-g-12 ui-g-nopad">
 								<f:selectItem itemLabel="Seleccione" itemValue=""/>
-								<f:selectItems value="#{gestionClientesBean.listaCiudades}" var="ciudad" itemValue="#{ciudad.id}" itemLabel="#{ciudad.nombre}"/>
-								<p:ajax event="itemSelect" update="inputCiudad"/>
+								<f:selectItems value="#{gestionCitasBean.listaTipoServicio}" var="servicio" 
+									itemLabel="#{servicio.nombre}" itemValue="#{servicio.id}"/>
+								<p:ajax event="itemSelect" update="inputTipoServicio"/>
 							</p:selectOneMenu>
-							<p:message for="inputCiudad" styleClass="ui-g-12" />
+							<p:message for="inputTipoServicio" styleClass="ui-g-12" />
+						</div>
+						<div class="ui-lg-12 ui-md-12 ui-g-12">
+							<p:outputLabel id="lblDescripcion" for="inputDescripcion"
+								value="Descripci&#243;n:" styleClass="ui-g-12" />
+							<p:inputTextarea id="inputDescripcion" value="#{gestionCitasBean.citaDTO.descripcion}"
+								styleClass="ui-g-12" maxlength="100"
+								required="true" requiredMessage="Este campo es requerido" />
+							<p:message for="inputDescripcion" styleClass="ui-g-12" />
+						</div>
+						<div class="ui-lg-12 ui-md-12 ui-g-12">
+							<p:outputLabel value="Fecha Servicio:" for="fechaServicio" styleClass="ui-g-12" />
+							<p:calendar id="fechaServicio" value="#{gestionCitasBean.citaDTO.fechaHora}"
+								styleClass="filter_calendar ui-g-12 ui-g-nopad" mindate="#{gestionCitasBean.fechaMinCita()}"
+								showOn="button" required="true" requiredMessage="Este campo es requerido"
+								locale="es" pattern="dd/MM/yyyy HH:mm">
+							</p:calendar>
+							<p:message for="fechaServicio" styleClass="ui-g-12" />
+						</div>
+						<div class="ui-lg-12 ui-md-12 ui-g-12">
+							<p:outputLabel id="lblSede" for="inputSede" value="Sede:"
+								styleClass="ui-g-12" />
+							<p:selectOneMenu id="inputSede" value="#{gestionCitasBean.idSede}"
+								required="true" requiredMessage="Este campo es requerido" styleClass="ui-g-12 ui-g-nopad">
+								<f:selectItem itemLabel="Seleccione" itemValue=""/>
+								<f:selectItems value="#{gestionCitasBean.listaSedes}" var="sede" itemLabel="#{sede.nombre}"
+									itemValue="#{sede.id}"/>
+								<p:ajax event="itemSelect" update="inputSede"/>
+							</p:selectOneMenu>
+							<p:message for="inputSede" styleClass="ui-g-12" />
+						</div>
+						<div class="ui-lg-12 ui-md-12 ui-g-12">
+							<p:outputLabel id="lblCliente" for="inputCliente"
+								value="Cliente:" styleClass="ui-g-12" />
+							<p:autoComplete id="inputCliente" styleClass="ui-g-12 ui-g-nopad" maxlength="50" inputStyle="width:98%"
+								value="#{gestionCitasBean.citaDTO.cliente}" completeMethod="#{gestionCitasBean.autocompleteClientes}"
+								var="cliente" itemLabel="#{cliente.nombre.concat('-')}#{cliente.email}" itemValue="#{cliente}"
+								required="true" requiredMessage="Este campo es requerido"  forceSelection="true"
+								emptyMessage="No se encuentran registros" converter="clienteConverter"/>
+							<p:message for="inputCliente" styleClass="ui-g-12" />
 						</div>
 					</p:panel>
 					<div class="ui-g-12" style="text-align: center">
-						<p:commandButton id="btnGuardar" styleClass="botones_azules" actionListener="#{gestionClientesBean.nuevo()}" value="Guardar" style="width:103px" 
-							update="formNuevo msgs formRegistros formFiltros"/>
+						<p:commandButton id="btnGuardar" styleClass="botones_azules" value="Guardar" style="width:103px" 
+							update="formNuevo msgs formRegistros formFiltros" actionListener="#{gestionCitasBean.nueva}"/>
 						<p:commandButton id="btnCancelar" styleClass="botones_rojos" value="Cancelar" 
 							onclick="PF('popUpNuevo').hide()" style="width:103px"/>
 					</div>
@@ -229,7 +238,7 @@
 				<f:facet name="header">
 					<h:panelGrid columns="2">
 						<h:panelGroup>
-							<h:outputText value="Eliminar cliente" />
+							<h:outputText value="Eliminar cita"/>
 						</h:panelGroup>
 					</h:panelGrid>
 				</f:facet>
@@ -237,17 +246,17 @@
 					<h:form id="formPopupConfirmarInactivar">
 						<div class="ui-g-12" style="text-align: center">
 							<p:outputLabel style="font-size : 30pts">
-									¿Est&#225; seguro que desea eliminar el cliente seleccionado&#63;,
-									se eliminaran los registros asociados a este.
+									¿Est&#225; seguro que desea eliminar la cita seleccionada&#63;,
+									se eliminaran los registros asociados a esta.
 								</p:outputLabel>
 						</div>
 						<!-- BOTONES SI/NO -->
 						<div class="ui-g-12" style="width: 100%; text-align:center">
 							<p:commandButton value="CONTINUAR" id="botonContinuar"
+								actionListener="#{gestionCitasBean.eliminarCita()}"
 								styleClass="botones_azules" icon="ui-icon-check" process="@this"
 								style="margin-right : 10px; margin-left: 10px; width:150px"
 								oncomplete="PF('popUpConfirmacion').hide();"
-								actionListener="#{gestionClientesBean.eliminarCliente()}"
 								update="msgs formRegistros formFiltros" resetValues="true">
 							</p:commandButton>
 							<p:commandButton value="CANCELAR" id="botonCancelar"
